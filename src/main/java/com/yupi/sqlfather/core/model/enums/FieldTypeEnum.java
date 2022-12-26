@@ -24,7 +24,8 @@ public enum FieldTypeEnum {
     TIME("time", "Time", "Date"),
     YEAR("year", "Integer", "number"),
     DATETIME("datetime", "Date", "Date"),
-    TIMESTAMP("timestamp", "Long", "number"),
+    //TIMESTAMP("timestamp", "Long", "number"),
+    TIMESTAMP("timestamp", "Date", "number"),
     CHAR("char", "String", "string"),
     VARCHAR("varchar", "String", "string"),
     TINYTEXT("tinytext", "String", "string"),
@@ -71,6 +72,11 @@ public enum FieldTypeEnum {
         }
         for (FieldTypeEnum mockTypeEnum : FieldTypeEnum.values()) {
             if (mockTypeEnum.value.equals(value)) {
+                return mockTypeEnum;
+            }
+        }
+        for (FieldTypeEnum mockTypeEnum : FieldTypeEnum.values()) {
+            if (StringUtils.startsWith(value, mockTypeEnum.value)) {
                 return mockTypeEnum;
             }
         }

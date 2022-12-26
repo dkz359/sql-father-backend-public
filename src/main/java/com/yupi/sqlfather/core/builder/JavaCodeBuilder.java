@@ -58,6 +58,8 @@ public class JavaCodeBuilder {
         javaEntityGenerateDTO.setClassName(upperCamelTableName);
         // 类注释为表注释 > 表名
         javaEntityGenerateDTO.setClassComment(Optional.ofNullable(tableComment).orElse(upperCamelTableName));
+        // 设置表名
+        javaEntityGenerateDTO.setTableName(tableName);
         // 依次填充每一列
         List<FieldDTO> fieldDTOList = new ArrayList<>();
         for (Field field : tableSchema.getFieldList()) {
@@ -66,11 +68,56 @@ public class JavaCodeBuilder {
             FieldTypeEnum fieldTypeEnum = Optional.ofNullable(FieldTypeEnum.getEnumByValue(field.getFieldType())).orElse(FieldTypeEnum.TEXT);
             fieldDTO.setJavaType(fieldTypeEnum.getJavaType());
             fieldDTO.setFieldName(StrUtil.toCamelCase(field.getFieldName()));
+            fieldDTO.setColumnName(field.getFieldName());
+            fieldDTO.setPrimaryKey(field.isPrimaryKey());
             fieldDTOList.add(fieldDTO);
         }
         javaEntityGenerateDTO.setFieldList(fieldDTOList);
         StringWriter stringWriter = new StringWriter();
         Template temp = configuration.getTemplate("java_entity.ftl");
+        temp.process(javaEntityGenerateDTO, stringWriter);
+        return stringWriter.toString();
+    }
+
+    /**
+     * 构造 Java JPA实体代码
+     *
+     * @param tableSchema 表概要
+     * @return 生成的 java 代码
+     */
+    @SneakyThrows
+    public static String buildJpaEntityCode(TableSchema tableSchema) {
+        // 传递参数
+        JavaEntityGenerateDTO javaEntityGenerateDTO = new JavaEntityGenerateDTO();
+        String tableName = tableSchema.getTableName();
+        String tableComment = tableSchema.getTableComment();
+        String upperCamelTableName = StringUtils.capitalize(StrUtil.toCamelCase(tableName));
+        // 类名为大写的表名
+        javaEntityGenerateDTO.setClassName(upperCamelTableName);
+        // 类注释为表注释 > 表名
+        javaEntityGenerateDTO.setClassComment(Optional.ofNullable(tableComment).orElse(upperCamelTableName));
+        // 设置表名
+        javaEntityGenerateDTO.setTableName(tableName);
+        // 依次填充每一列
+        List<FieldDTO> fieldDTOList = new ArrayList<>();
+        for (Field field : tableSchema.getFieldList()) {
+            FieldDTO fieldDTO = new FieldDTO();
+            fieldDTO.setComment(field.getComment());
+            FieldTypeEnum fieldTypeEnum = Optional.ofNullable(FieldTypeEnum.getEnumByValue(field.getFieldType())).orElse(FieldTypeEnum.TEXT);
+            fieldDTO.setJavaType(fieldTypeEnum.getJavaType());
+            String fieldName = field.getFieldName();
+            fieldDTO.setColumnName(fieldName);
+            if(StringUtils.startsWith(fieldName, "is_")){
+                fieldName = StringUtils.substring(fieldName, 3);
+            }
+            fieldDTO.setFieldName(StrUtil.toCamelCase(fieldName));
+            fieldDTO.setPrimaryKey(field.isPrimaryKey());
+            fieldDTOList.add(fieldDTO);
+        }
+
+        javaEntityGenerateDTO.setFieldList(fieldDTOList);
+        StringWriter stringWriter = new StringWriter();
+        Template temp = configuration.getTemplate("jpa_entity.ftl");
         temp.process(javaEntityGenerateDTO, stringWriter);
         return stringWriter.toString();
     }

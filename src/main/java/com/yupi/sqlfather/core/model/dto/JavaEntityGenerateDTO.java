@@ -27,6 +27,11 @@ public class JavaEntityGenerateDTO {
     private List<FieldDTO> fieldList;
 
     /**
+     * 数据库表名
+     */
+    private String tableName;
+
+    /**
      * 列信息
      */
     @Data
@@ -45,6 +50,15 @@ public class JavaEntityGenerateDTO {
          * 注释（字段中文名）
          */
         private String comment;
+        /**
+         * 数据库列名
+         */
+        private String columnName;
+
+        /**
+         * 是否是主键
+         */
+        private Boolean primaryKey;
     }
 
 }

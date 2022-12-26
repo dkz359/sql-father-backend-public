@@ -50,6 +50,8 @@ public class GeneratorFacade {
         String dataJson = JsonBuilder.buildJson(dataList);
         // 生成 java 实体代码
         String javaEntityCode = JavaCodeBuilder.buildJavaEntityCode(tableSchema);
+        // 生成JPA实体代码
+        String jpaEntityCode = JavaCodeBuilder.buildJpaEntityCode(tableSchema);
         // 生成 java 对象代码
         String javaObjectCode = JavaCodeBuilder.buildJavaObjectCode(tableSchema, dataList);
         // 生成 typescript 类型代码
@@ -61,7 +63,8 @@ public class GeneratorFacade {
         generateVO.setDataList(dataList);
         generateVO.setInsertSql(insertSql);
         generateVO.setDataJson(dataJson);
-        generateVO.setJavaEntityCode(javaEntityCode);
+        //generateVO.setJavaEntityCode(javaEntityCode);
+        generateVO.setJavaEntityCode(jpaEntityCode);
         generateVO.setJavaObjectCode(javaObjectCode);
         generateVO.setTypescriptTypeCode(typescriptTypeCode);
         return generateVO;
