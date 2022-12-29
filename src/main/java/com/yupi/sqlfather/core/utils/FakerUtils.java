@@ -1,5 +1,6 @@
 package com.yupi.sqlfather.core.utils;
 
+import cn.hutool.core.util.IdUtil;
 import com.yupi.sqlfather.core.model.enums.MockParamsRandomTypeEnum;
 import java.sql.Timestamp;
 import java.time.format.DateTimeFormatter;
@@ -33,6 +34,8 @@ public class FakerUtils {
             return defaultValue;
         }
         switch (randomTypeEnum) {
+            case UUID:
+                return IdUtil.simpleUUID();
             case NAME:
                 return ZH_FAKER.name().name();
             case CITY:

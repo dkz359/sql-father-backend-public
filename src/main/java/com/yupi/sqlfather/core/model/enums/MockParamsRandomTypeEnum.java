@@ -12,6 +12,7 @@ import org.apache.commons.lang3.StringUtils;
  */
 public enum MockParamsRandomTypeEnum {
 
+    UUID("UUID"),
     STRING("字符串"),
     NAME("人名"),
     CITY("城市"),
